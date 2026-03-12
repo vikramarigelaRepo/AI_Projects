@@ -95,11 +95,47 @@ pip install langchain-openai langgraph pydantic python-dotenv gradio ipython
 5. Click **Approve & Deploy** or **Reject**.
 6. Monitor the deployment log and status in the UI.
 
+## Evaluations
+
+The `evals/` directory contains an evaluation suite for the `parse_user_input` node, verifying that the LLM correctly extracts structured deployment parameters from natural language prompts.
+
+### Evaluation Patterns
+
+| Pattern | Purpose | Speed |
+|---|---|---|
+| **Outcome-Based** | Direct comparison of parsed output against expected fields — ideal for regression testing and CI/CD. | Fast |
+| **Rubric-Based** | Multi-dimensional LLM-as-judge scoring across accuracy, completeness, and defaults — best for quality analysis. | Medium |
+| **Reflection** | Iterative self-critique loop where the LLM refines its own output — suited for production optimization. | Slow |
+
+### Running Evals
+
+```bash
+cd evals
+python test_parse_user_input_eval.py
+```
+
+Or use programmatically:
+
+```python
+from test_parse_user_input_eval import ParseEvaluationRunner, eval_llm
+
+runner = ParseEvaluationRunner(eval_llm)
+results = runner.run_outcome_based_tests()
+```
+
+The test dataset covers diverse scenarios including basic resource creation, security settings, tagging, explicit resource groups, and multi-property requests across all supported resource types.
+
+See `evals/EVAL_GUIDE.md` and `evals/EVAL_QUICKREF.md` for detailed usage.
+
 ## Project Structure
 
 ```
 azure_infra_deploy_agent/
 ├── L7_AutomateCloudDeployment.ipynb   # Main notebook with the LangGraph agent
 ├── README.md                          # This file
-└── .env                               # Azure OpenAI credentials (not checked in)
+├── .env                               # Azure OpenAI credentials (not checked in)
+└── evals/
+    ├── test_parse_user_input_eval.py  # Evaluation suite for parse_user_input
+    ├── EVAL_GUIDE.md                  # Detailed evaluation usage guide
+    └── EVAL_QUICKREF.md              # Quick reference for eval patterns
 ```
