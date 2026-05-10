@@ -1,2 +1,2 @@
 # AI_Projects
-This repo holds my personal AI projecys
+This repo holds my personal AI projects
